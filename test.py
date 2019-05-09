@@ -2,6 +2,10 @@ import unittest
 import helper
 
 env_data = helper.fetch_maze()
+way = 0
+start = 1
+barrier = 2
+destination = 3
 
 print("\n任务1: 正确获取模拟环境的长和宽与模拟环境中第3行第6列元素")
 rows = len(env_data)
@@ -10,10 +14,19 @@ row_3_col_6 = env_data[2][5]
 print("迷宫共有", rows, "行", columns, "列，第三行第六列的元素是", row_3_col_6)
 
 print("\n任务2: 正确计算模拟环境中，第一行和第三列的障碍物个数。")
-number_of_barriers_row1 = len([point for point in env_data[0] if point == 2])
+number_of_barriers_row1 = len([point for point in env_data[0] if point == barrier])
 number_of_barriers_col3 = 0
 for row_index in range(len(env_data)):
-    number_of_barriers_col3 += 1 if env_data[row_index][2] == 2 else 0
+    number_of_barriers_col3 += 1 if env_data[row_index][2] == barrier else 0
+
+print("\n任务3: 正确创建并赋值loc_map字典。")
+loc_map = {}
+for row_index, row in enumerate(env_data):
+    for col_index, point in enumerate(row):
+        if point == start:
+            loc_map["start"] = row_index, col_index
+        elif point == destination:
+            loc_map["destination"] = row_index, col_index
 
 
 class RobotControllerTestCase(unittest.TestCase):
