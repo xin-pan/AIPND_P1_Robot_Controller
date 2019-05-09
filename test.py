@@ -22,7 +22,7 @@ for row_index in range(len(env_data)):
     number_of_barriers_col3 += 1 if env_data[row_index][2] == barrier else 0
 
 #################################################################
-print("\n任务3: 正确创建并赋值loc_map字典。")
+# 任务3
 loc_map = {}
 for row_index, row in enumerate(env_data):
     for col_index, point in enumerate(row):
@@ -31,7 +31,9 @@ for row_index, row in enumerate(env_data):
         elif point == destination:
             loc_map["destination"] = row_index, col_index
 
+
 #################################################################
+# 任务4： is_move_valid_special
 def is_move_valid_special(loc, act):
     """
     Judge wether the robot can take action act
@@ -41,14 +43,31 @@ def is_move_valid_special(loc, act):
     loc -- tuple, robots current location
     act -- string, robots meant action
     """
+    return is_move_valid(env_data, loc, act)
+
+
+#################################################################
+# 任务5： is_move_valid
+def is_move_valid(env, loc, act):
+    """
+    Judge wether the robot can take action act
+    at location loc.
+
+    Keyword arguments:
+    env -- list, the environment data
+    loc -- tuple, robots current location
+    act -- string, robots meant action
+    """
+    rows_ = len(env)
+    columns_ = len(env[0])
     if act == 'u':
         return loc[0] > 0
     if act == 'd':
-        return loc[0] < rows - 1
+        return loc[0] < rows_ - 1
     if act == 'l':
         return loc[1] > 0
     if act == 'r':
-        return loc[1] < columns - 1
+        return loc[1] < columns_ - 1
 
 
 class RobotControllerTestCase(unittest.TestCase):
@@ -69,8 +88,8 @@ class RobotControllerTestCase(unittest.TestCase):
         self.assertEqual(is_move_valid(env_data, (4, 0), 'd'), False)
         self.assertEqual(is_move_valid(env_data, (0, 8), 'r'), False)
 
-        self.assertEqual(is_move_valid(env_data, (0, 0), 'r'), False)
-        self.assertEqual(is_move_valid(env_data, (1, 0), 'd'), False)
+        self.assertEqual(is_move_valid(env_data, (0, 0), 'r'), True)
+        self.assertEqual(is_move_valid(env_data, (1, 0), 'd'), True)
 
         self.assertEqual(is_move_valid(env_data, (1, 7), 'd'), True)
         self.assertEqual(is_move_valid(env_data, (3, 5), 'r'), True)
