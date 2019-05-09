@@ -1,7 +1,16 @@
 import unittest
+import helper
+
+env_data = helper.fetch_maze()
+
+# 任务1: 正确获取模拟环境的长和宽与模拟环境中第3行第6列元素
+rows = len(env_data)
+columns = len(env_data[0])
+row_3_col_6 = env_data[2][5]
+print("迷宫共有", rows, "行", columns, "列，第三行第六列的元素是", row_3_col_6)
 
 
-class RobotControllortTestCase(unittest.TestCase):
+class RobotControllerTestCase(unittest.TestCase):
     """Test for Robot Controller project"""
 
     def test_cal_barriers(self):
@@ -41,8 +50,6 @@ class RobotControllortTestCase(unittest.TestCase):
         self.assertEqual(is_move_valid_special((3, 5), 'r'), True)
 
         self.assertEqual(is_move_valid_special((1, 0), 'u'), True)
-
-
 
     def test_valid_actions(self):
         self.assertEqual(valid_actions(env_data, (0, 8)), ['d'])
