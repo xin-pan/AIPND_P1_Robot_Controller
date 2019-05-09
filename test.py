@@ -3,11 +3,17 @@ import helper
 
 env_data = helper.fetch_maze()
 
-# 任务1: 正确获取模拟环境的长和宽与模拟环境中第3行第6列元素
+print("\n任务1: 正确获取模拟环境的长和宽与模拟环境中第3行第6列元素")
 rows = len(env_data)
 columns = len(env_data[0])
 row_3_col_6 = env_data[2][5]
 print("迷宫共有", rows, "行", columns, "列，第三行第六列的元素是", row_3_col_6)
+
+print("\n任务2: 正确计算模拟环境中，第一行和第三列的障碍物个数。")
+number_of_barriers_row1 = len([point for point in env_data[0] if point == 2])
+number_of_barriers_col3 = 0
+for row_index in range(len(env_data)):
+    number_of_barriers_col3 += 1 if env_data[row_index][2] == 2 else 0
 
 
 class RobotControllerTestCase(unittest.TestCase):
