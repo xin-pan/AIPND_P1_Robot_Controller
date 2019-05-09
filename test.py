@@ -70,6 +70,21 @@ def is_move_valid(env, loc, act):
         return loc[1] < columns_ - 1
 
 
+#################################################################
+# 任务6： valid_actions
+def valid_actions(env, loc):
+    """
+    Find all possible actions the robot can take
+    at location loc.
+
+    Keyword arguments:
+    env -- list, the environment data
+    loc -- tuple, robots current location
+    """
+    return [action for action in ['u', 'd', "l", "r"] if is_move_valid(env, loc, action)]
+
+
+
 class RobotControllerTestCase(unittest.TestCase):
     """Test for Robot Controller project"""
 
@@ -112,10 +127,11 @@ class RobotControllerTestCase(unittest.TestCase):
         self.assertEqual(is_move_valid_special((1, 0), 'u'), True)
 
     def test_valid_actions(self):
-        self.assertEqual(valid_actions(env_data, (0, 8)), ['d'])
+        result_list = valid_actions(env_data, (0, 8))
+        self.assertEqual(set(result_list), set(['d', 'l']))
 
         result_list = valid_actions(env_data, (1, 0))
-        self.assertTrue(['u', 'r'] == result_list or ['r', 'u'] == result_list)
+        self.assertTrue(set(result_list), set(['u', 'd', 'r']))
 
     def test_move_robot(self):
         self.assertEqual(move_robot((1, 0), 'u'), (0, 0))
