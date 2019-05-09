@@ -7,18 +7,21 @@ start = 1
 barrier = 2
 destination = 3
 
+#################################################################
 print("\n任务1: 正确获取模拟环境的长和宽与模拟环境中第3行第6列元素")
 rows = len(env_data)
 columns = len(env_data[0])
 row_3_col_6 = env_data[2][5]
 print("迷宫共有", rows, "行", columns, "列，第三行第六列的元素是", row_3_col_6)
 
+#################################################################
 print("\n任务2: 正确计算模拟环境中，第一行和第三列的障碍物个数。")
 number_of_barriers_row1 = len([point for point in env_data[0] if point == barrier])
 number_of_barriers_col3 = 0
 for row_index in range(len(env_data)):
     number_of_barriers_col3 += 1 if env_data[row_index][2] == barrier else 0
 
+#################################################################
 print("\n任务3: 正确创建并赋值loc_map字典。")
 loc_map = {}
 for row_index, row in enumerate(env_data):
@@ -27,6 +30,25 @@ for row_index, row in enumerate(env_data):
             loc_map["start"] = row_index, col_index
         elif point == destination:
             loc_map["destination"] = row_index, col_index
+
+#################################################################
+def is_move_valid_special(loc, act):
+    """
+    Judge wether the robot can take action act
+    at location loc.
+
+    Keyword arguments:
+    loc -- tuple, robots current location
+    act -- string, robots meant action
+    """
+    if act == 'u':
+        return loc[0] > 0
+    if act == 'd':
+        return loc[0] < rows - 1
+    if act == 'l':
+        return loc[1] > 0
+    if act == 'r':
+        return loc[1] < columns - 1
 
 
 class RobotControllerTestCase(unittest.TestCase):
@@ -62,8 +84,8 @@ class RobotControllerTestCase(unittest.TestCase):
         self.assertEqual(is_move_valid_special((4, 0), 'd'), False)
         self.assertEqual(is_move_valid_special((0, 8), 'r'), False)
 
-        self.assertEqual(is_move_valid_special((0, 0), 'r'), False)
-        self.assertEqual(is_move_valid_special((1, 0), 'd'), False)
+        self.assertEqual(is_move_valid_special((0, 0), 'r'), True)
+        self.assertEqual(is_move_valid_special((1, 0), 'd'), True)
 
         self.assertEqual(is_move_valid_special((1, 7), 'd'), True)
         self.assertEqual(is_move_valid_special((3, 5), 'r'), True)
