@@ -84,6 +84,27 @@ def valid_actions(env, loc):
     return [action for action in ['u', 'd', "l", "r"] if is_move_valid(env, loc, action)]
 
 
+#################################################################
+# 任务8：编写一个名为 move_robot 的函数，它有两个输入，分别为机器人当前所在的位置 loc 和即将执行的动作 act。接着会返回机器人执行动作之后的新位置 new_loc。
+def move_robot(loc, act):
+    """
+    Move robot.
+
+    Keyword arguments:
+    loc -- tuple, robots current location
+    act -- string, robots meant action
+    """
+    if valid_actions(env_data, loc).__contains__(act):
+        if act == 'u':
+            return loc[0] - 1, loc[1]
+        elif act == 'd':
+            return loc[0] + 1, loc[1]
+        elif act == 'l':
+            return loc[0], loc[1] - 1
+        elif act == 'r':
+            return loc[0], loc[1] + 1
+
+
 class RobotControllerTestCase(unittest.TestCase):
     """Test for Robot Controller project"""
 
