@@ -383,11 +383,68 @@ random_choose_actions(env_data, robot_current_loc)
 #     2. https://blog.csdn.net/hitwhylz/article/details/23089415
 
 # In[17]:
+class Node:
+    def __init__(self, loc, parent_path):
+        """
+
+        :param loc: location as tuple
+        :param parent_path: location list
+        """
+        self.loc = loc
+        cloned_parent_path = parent_path[:]
+        cloned_parent_path.append(loc)
+        self.path_ = cloned_parent_path
+
+    def __eq__(self, other):
+        return self.loc == other.loc
+
+    def __hash__(self):
+        return self.loc.__hash__()
+
+    def find_neighbors(self, graph_):
+        actions = valid_actions(graph_, self.loc)
+        return [Node(move_robot(self.loc, act), self.path_) for act in actions]
+
+    def get_path(self):
+        return self.path_
+
+    def get_loc(self):
+        return self.loc
 
 
-##TODO 13 实现你的算法
+class Graph:
+    def __init__(self, graph_):
+        """
+        Construct the graph
+
+        Keyword arguments:
+        graph -- int[][] : represented by a 2 dimension array
+        """
+        self.graph_ = graph_
+
+    def breadth_first(self, start_loc, destination_loc):
+        start_node = Node(start_loc, [])
+        self.breadth_node_queue_ = [start_node]
+        self.visited_ = set()
+
+        return self.breadth_first_(destination_loc)
+
+    def breadth_first_(self, destination_loc):
+        while len(self.breadth_node_queue_) > 0:
+            node = self.breadth_node_queue_.pop(0)
+            self.visited_.add(node)
+
+            if destination_loc == node.get_loc():
+                return node.get_path()
+            else:
+                neighbors = node.find_neighbors(self.graph_)
+                unvisited_neighbors = [neighbor for neighbor in neighbors if not neighbor in self.visited_]
+                for neighbor in unvisited_neighbors :
+                    self.breadth_node_queue_.append(neighbor)
+                return self.breadth_first_(destination_loc)
 
 
+get_ipython().run_line_magic('run', '-i -e test.py RobotControllortTestCase.test_breadth_first')
 # > 注意: 当你写完了所有的代码，并且回答了所有的问题。你就可以把你的 iPython Notebook 导出成 HTML 文件。你可以在菜单栏，这样导出**File -> Download as -> HTML (.html)**把这个 HTML 和这个 iPython notebook 一起做为你的作业提交。
 
 # In[ ]:

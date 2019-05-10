@@ -13187,7 +13187,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>maze-id 1-1557471668
+<pre>maze-id 1-1557506372
 [[3, 2, 2, 2, 2, 2, 2, 2, 1],
  [0, 0, 2, 2, 2, 2, 2, 0, 0],
  [2, 0, 0, 2, 2, 2, 0, 0, 2],
@@ -13815,7 +13815,7 @@ OK
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>在第138个回合找到宝藏！
+<pre>在第106个回合找到宝藏！
 </pre>
 </div>
 </div>
@@ -13852,13 +13852,96 @@ OK
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">##TODO 13 实现你的算法</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Node</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">parent_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param loc: location as tuple</span>
+<span class="sd">        :param parent_path: location list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loc</span> <span class="o">=</span> <span class="n">loc</span>
+        <span class="n">cloned_parent_path</span> <span class="o">=</span> <span class="n">parent_path</span><span class="p">[:]</span>
+        <span class="n">cloned_parent_path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_</span> <span class="o">=</span> <span class="n">cloned_parent_path</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">loc</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">loc</span>
+
+    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">loc</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">find_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph_</span><span class="p">):</span>
+        <span class="n">actions</span> <span class="o">=</span> <span class="n">valid_actions</span><span class="p">(</span><span class="n">graph_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">Node</span><span class="p">(</span><span class="n">move_robot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loc</span><span class="p">,</span> <span class="n">act</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_</span><span class="p">)</span> <span class="k">for</span> <span class="n">act</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_</span>
+
+    <span class="k">def</span> <span class="nf">get_loc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">loc</span>
+
+
+<span class="k">class</span> <span class="nc">Graph</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph_</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct the graph</span>
+
+<span class="sd">        Keyword arguments:</span>
+<span class="sd">        graph -- int[][] : represented by a 2 dimension array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_</span> <span class="o">=</span> <span class="n">graph_</span>
+
+    <span class="k">def</span> <span class="nf">breadth_first</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_loc</span><span class="p">,</span> <span class="n">destination_loc</span><span class="p">):</span>
+        <span class="n">start_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">start_loc</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">breadth_node_queue_</span> <span class="o">=</span> <span class="p">[</span><span class="n">start_node</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visited_</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">breadth_first_</span><span class="p">(</span><span class="n">destination_loc</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">breadth_first_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">destination_loc</span><span class="p">):</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">breadth_node_queue_</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">breadth_node_queue_</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visited_</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">destination_loc</span> <span class="o">==</span> <span class="n">node</span><span class="o">.</span><span class="n">get_loc</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">get_path</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">neighbors</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">find_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph_</span><span class="p">)</span>
+                <span class="n">unvisited_neighbors</span> <span class="o">=</span> <span class="p">[</span><span class="n">neighbor</span> <span class="k">for</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="n">neighbors</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visited_</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="n">unvisited_neighbors</span> <span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">breadth_node_queue_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neighbor</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">breadth_first_</span><span class="p">(</span><span class="n">destination_loc</span><span class="p">)</span>
+
+
+<span class="o">%</span><span class="k">run</span> -i -e test.py RobotControllortTestCase.test_breadth_first
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>.
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 

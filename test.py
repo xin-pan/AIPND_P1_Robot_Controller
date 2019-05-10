@@ -42,8 +42,6 @@ class RobotControllortTestCase(unittest.TestCase):
 
         self.assertEqual(is_move_valid_special((1, 0), 'u'), True)
 
-
-
     def test_valid_actions(self):
         self.assertEqual(valid_actions(env_data, (0, 8)), ['d'])
 
@@ -55,6 +53,27 @@ class RobotControllortTestCase(unittest.TestCase):
         self.assertEqual(move_robot((0, 8), 'd'), (1, 8))
         self.assertEqual(move_robot((3, 3), 'l'), (3, 2))
         self.assertEqual(move_robot((1, 0), 'r'), (1, 1))
+
+    def test_breadth_first(self):
+        graph = Graph(env_data)
+        path = graph.breadth_first(loc_map["start"], loc_map["destination"])
+        self.assertEqual(path, [(0, 8),
+                                (1, 8),
+                                (1, 7),
+                                (2, 7),
+                                (2, 6),
+                                (3, 6),
+                                (3, 5),
+                                (4, 5),
+                                (4, 4),
+                                (4, 3),
+                                (3, 3),
+                                (3, 2),
+                                (2, 2),
+                                (2, 1),
+                                (1, 1),
+                                (1, 0),
+                                (0, 0)])
 
 
 if __name__ == '__main__':
