@@ -3,10 +3,10 @@ import helper
 from random import choice
 
 env_data = helper.fetch_maze()
-way = 0
-start = 1
-barrier = 2
-destination = 3
+position_empty = 0
+position_robot = 1
+position_barrier = 2
+position_destination = 3
 
 #################################################################
 print("\n任务1: 正确获取模拟环境的长和宽与模拟环境中第3行第6列元素")
@@ -17,19 +17,19 @@ print("迷宫共有", rows, "行", columns, "列，第三行第六列的元素�
 
 #################################################################
 print("\n任务2: 正确计算模拟环境中，第一行和第三列的障碍物个数。")
-number_of_barriers_row1 = len([point for point in env_data[0] if point == barrier])
+number_of_barriers_row1 = len([point for point in env_data[0] if point == position_barrier])
 number_of_barriers_col3 = 0
 for row_index in range(len(env_data)):
-    number_of_barriers_col3 += 1 if env_data[row_index][2] == barrier else 0
+    number_of_barriers_col3 += 1 if env_data[row_index][2] == position_barrier else 0
 
 #################################################################
 # 任务3
 loc_map = {}
 for row_index, row in enumerate(env_data):
     for col_index, point in enumerate(row):
-        if point == start:
+        if point == position_robot:
             loc_map["start"] = row_index, col_index
-        elif point == destination:
+        elif point == position_destination:
             loc_map["destination"] = row_index, col_index
 
 
@@ -62,13 +62,13 @@ def is_move_valid(env, loc, act):
     rows_ = len(env)
     columns_ = len(env[0])
     if act == 'u':
-        return loc[0] > 0 and env[loc[0] - 1][loc[1]] != barrier
+        return loc[0] > 0 and env[loc[0] - 1][loc[1]] != position_barrier
     if act == 'd':
-        return loc[0] < rows_ - 1 and env[loc[0] + 1][loc[1]] != barrier
+        return loc[0] < rows_ - 1 and env[loc[0] + 1][loc[1]] != position_barrier
     if act == 'l':
-        return loc[1] > 0 and env[loc[0]][loc[1] - 1] != barrier
+        return loc[1] > 0 and env[loc[0]][loc[1] - 1] != position_barrier
     if act == 'r':
-        return loc[1] < columns_ - 1 and env[loc[0]][loc[1] + 1] != barrier
+        return loc[1] < columns_ - 1 and env[loc[0]][loc[1] + 1] != position_barrier
 
 
 #################################################################
@@ -172,23 +172,32 @@ def find_destination():
     # 当机器人走到终点时，输出“在第n个回合找到宝藏！”。
     start_loc = loc_map['start']
     env_data_ = env_data
-    for count_acts in range(1300):
-        env_data_, start_loc = random_choose_actions(env_data_, start_loc)
-        helper.fetch_maze()
-        if start_loc == loc_map['destination']:
+    for count_acts in range(300):
+        new_loc = random_choose_actions(env_data_, start_loc)
+        if new_loc == loc_map['destination']:
             print("在第{}个回合找到宝藏！".format(count_acts + 1))
             return
 
+        env_data_[new_loc[0]][new_loc[1]] = position_robot
+        env_data_[start_loc[0]][start_loc[1]] = position_empty
+        start_loc = new_loc
+        helper.fetch_maze()
+
 
 def random_choose_actions(env_, robot_current_loc):
+    """
+    Random choose the action
+
+    Keyword arguments:
+    env -- list, the environment data
+    robot_current_loc -- tuple, robots current location
+    Return:
+        The new location
+    """
     random_act = choice(valid_actions(env_, robot_current_loc))
     new_loc = move_robot(robot_current_loc, random_act)
-    # loc_map['start'] = new_loc
-    env_[new_loc[0]][new_loc[1]] = start
-    env_[robot_current_loc[0]][robot_current_loc[1]] = way
-    return env_, new_loc
+    return new_loc
 
 
 if __name__ == '__main__':
-    # unittest.main()
-    find_destination()
+    unittest.main()
