@@ -61,17 +61,17 @@ def is_move_valid(env, loc, act):
     rows_ = len(env)
     columns_ = len(env[0])
     if act == 'u':
-        return loc[0] > 0
+        return loc[0] > 0 and env[loc[0] - 1][loc[1]] != barrier
     if act == 'd':
-        return loc[0] < rows_ - 1
+        return loc[0] < rows_ - 1 and env[loc[0] + 1][loc[1]] != barrier
     if act == 'l':
-        return loc[1] > 0
+        return loc[1] > 0 and env[loc[0]][loc[1] - 1] != barrier
     if act == 'r':
-        return loc[1] < columns_ - 1
+        return loc[1] < columns_ - 1 and env[loc[0]][loc[1] + 1] != barrier
 
 
 #################################################################
-# 任务6： valid_actions
+# 任务7： valid_actions
 def valid_actions(env, loc):
     """
     Find all possible actions the robot can take
@@ -82,7 +82,6 @@ def valid_actions(env, loc):
     loc -- tuple, robots current location
     """
     return [action for action in ['u', 'd', "l", "r"] if is_move_valid(env, loc, action)]
-
 
 
 class RobotControllerTestCase(unittest.TestCase):
@@ -103,8 +102,8 @@ class RobotControllerTestCase(unittest.TestCase):
         self.assertEqual(is_move_valid(env_data, (4, 0), 'd'), False)
         self.assertEqual(is_move_valid(env_data, (0, 8), 'r'), False)
 
-        self.assertEqual(is_move_valid(env_data, (0, 0), 'r'), True)
-        self.assertEqual(is_move_valid(env_data, (1, 0), 'd'), True)
+        self.assertEqual(is_move_valid(env_data, (0, 0), 'r'), False)
+        self.assertEqual(is_move_valid(env_data, (1, 0), 'd'), False)
 
         self.assertEqual(is_move_valid(env_data, (1, 7), 'd'), True)
         self.assertEqual(is_move_valid(env_data, (3, 5), 'r'), True)
@@ -118,8 +117,8 @@ class RobotControllerTestCase(unittest.TestCase):
         self.assertEqual(is_move_valid_special((4, 0), 'd'), False)
         self.assertEqual(is_move_valid_special((0, 8), 'r'), False)
 
-        self.assertEqual(is_move_valid_special((0, 0), 'r'), True)
-        self.assertEqual(is_move_valid_special((1, 0), 'd'), True)
+        self.assertEqual(is_move_valid_special((0, 0), 'r'), False)
+        self.assertEqual(is_move_valid_special((1, 0), 'd'), False)
 
         self.assertEqual(is_move_valid_special((1, 7), 'd'), True)
         self.assertEqual(is_move_valid_special((3, 5), 'r'), True)
@@ -128,10 +127,10 @@ class RobotControllerTestCase(unittest.TestCase):
 
     def test_valid_actions(self):
         result_list = valid_actions(env_data, (0, 8))
-        self.assertEqual(set(result_list), set(['d', 'l']))
+        self.assertEqual(set(result_list), set(['d']))
 
         result_list = valid_actions(env_data, (1, 0))
-        self.assertTrue(set(result_list), set(['u', 'd', 'r']))
+        self.assertTrue(set(result_list), set(['u', 'r']))
 
     def test_move_robot(self):
         self.assertEqual(move_robot((1, 0), 'u'), (0, 0))
