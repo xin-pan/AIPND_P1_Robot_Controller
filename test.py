@@ -1,5 +1,6 @@
 import unittest
 import helper
+from random import choice
 
 env_data = helper.fetch_maze()
 way = 0
@@ -159,6 +160,35 @@ class RobotControllerTestCase(unittest.TestCase):
         self.assertEqual(move_robot((3, 3), 'l'), (3, 2))
         self.assertEqual(move_robot((1, 0), 'r'), (1, 1))
 
+    @staticmethod
+    def test_find_destination():
+        find_destination()
+
+
+def find_destination():
+    # 利用上方定义的 valid_actions 函数，找出当前位置下，机器人可行的动作；
+    # 利用 random 库中的 choice 函数，从机器人可行的动作中，随机挑选出一个动作；
+    # 接着根据这个动作，利用上方定义的 move_robot 函数，来移动机器人，并更新机器人的位置；
+    # 当机器人走到终点时，输出“在第n个回合找到宝藏！”。
+    start_loc = loc_map['start']
+    env_data_ = env_data
+    for count_acts in range(1300):
+        env_data_, start_loc = random_choose_actions(env_data_, start_loc)
+        helper.fetch_maze()
+        if start_loc == loc_map['destination']:
+            print("在第{}个回合找到宝藏！".format(count_acts + 1))
+            return
+
+
+def random_choose_actions(env_, robot_current_loc):
+    random_act = choice(valid_actions(env_, robot_current_loc))
+    new_loc = move_robot(robot_current_loc, random_act)
+    # loc_map['start'] = new_loc
+    env_[new_loc[0]][new_loc[1]] = start
+    env_[robot_current_loc[0]][robot_current_loc[1]] = way
+    return env_, new_loc
+
 
 if __name__ == '__main__':
-    unittest.main()
+    # unittest.main()
+    find_destination()
